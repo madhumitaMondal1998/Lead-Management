@@ -1,34 +1,34 @@
-import React, { useState } from "react";
-import { createLead } from "../../service/LeadService";
+import React, { useState } from 'react';
+import axios from 'axios';
 
-const LeadForm = ({ refreshLeads }) => {
-  const [lead, setLead] = useState({
-    name: "",
-    number: "",
-    email: "",
-    product: "",
+const LeadForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    number: '',
+    email: '',
+    product: ''
   });
 
   const handleChange = (e) => {
-    setLead({ ...lead, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await createLead(lead);
-    refreshLeads();
+    try {
+      const response = await axios.post('/api/leads', formData);
+      console.log('Lead created:', response.data);
+    } catch (error) {
+      console.error('Error creating lead:', error.response.data);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input name="name" placeholder="Name" onChange={handleChange} />
-      <input name="number" placeholder="Number" onChange={handleChange} />
-      <input name="email" placeholder="Email" onChange={handleChange} />
-      <select name="product" onChange={handleChange}>
-        <option value="A">Product A</option>
-        <option value="B">Product B</option>
-        <option value="C">Product C</option>
-      </select>
+      <input type="text" name="name" placeholder="Name" value={formData.name} onChange={handleChange} required />
+      <input type="text" name="number" placeholder="Number" value={formData.number} onChange={handleChange} required />
+      <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+      <input type="text" name="product" placeholder="Product" value={formData.product} onChange={handleChange} required />
       <button type="submit">Create Lead</button>
     </form>
   );

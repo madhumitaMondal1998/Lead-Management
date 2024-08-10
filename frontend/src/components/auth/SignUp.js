@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { registerUser } from "../../service/AuthService";
+import { useNavigate } from 'react-router-dom';
 
 function SignUp() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleClick = () => {
+    navigate('/');
+  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -17,6 +23,8 @@ function SignUp() {
   };
 
   return (
+    <>
+    <div>
     <form onSubmit={handleSignUp}>
       <h2>Sign Up</h2>
       <input
@@ -39,6 +47,9 @@ function SignUp() {
       />
       <button type="submit">Sign Up</button>
     </form>
+    <p onClick={handleClick}>Already have an account?Login here</p>
+    </div>
+    </>
   );
 }
 
