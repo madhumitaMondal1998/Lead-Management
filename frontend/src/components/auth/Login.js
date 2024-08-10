@@ -1,38 +1,78 @@
-import React, { useState } from "react";
-import { loginUser } from "../../service/AuthService";
+// import React, { useState } from "react";
+// import { loginUser } from "../../service/AuthService";
+
+// const Login = () => {
+//   console.log("here");
+//   const [username, setUsername] = useState("");
+//   const [password, setPassword] = useState("");
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const user = await loginUser({ username, password });
+//       console.log("Logged in:", user);
+//     } catch (error) {
+//       console.error("Login failed:", error.message);
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit}>
+//       <h2>Log In</h2>
+//       <input
+//         type="text"
+//         value={username}
+//         onChange={(e) => setUsername(e.target.value)}
+//         placeholder="Username"
+//       />
+//       <input
+//         type="password"
+//         value={password}
+//         onChange={(e) => setPassword(e.target.value)}
+//         placeholder="Password"
+//       />
+//       <button type="submit">Login</button>
+//     </form>
+//   );
+// };
+
+// export default Login;
+
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const onChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     try {
-      const user = await loginUser({ username, password });
-      console.log("Logged in:", user);
-    } catch (error) {
-      console.error("Login failed:", error.message);
+      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      localStorage.setItem('token', res.data.token);
+      console.log('Login successful');
+      // Redirect to protected route or perform other actions
+    } catch (err) {
+      setError('Login failed: ' + err.response.data.error || 'Something went wrong');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Log In</h2>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
+    <form onSubmit={onSubmit}>
+      <input type="email" name="email" onChange={onChange} />
+      <input type="password" name="password" onChange={onChange} />
       <button type="submit">Login</button>
+      {error && <p>{error}</p>}
     </form>
   );
 };
 
 export default Login;
+

@@ -8,4 +8,9 @@ router.post("/register", registerUser);
 
 router.post("/login", authmiddleware, loginUser);
 
+// Protected Route Example
+router.get('/protected', authmiddleware, (req, res) => {
+    res.json({ msg: 'This is a protected route' });
+  });
+
 module.exports = router;
